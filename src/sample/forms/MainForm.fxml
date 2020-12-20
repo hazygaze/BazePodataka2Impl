@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.MainController">
    <bottom>
@@ -26,13 +31,20 @@
       </HBox>
    </bottom>
    <top>
-      <HBox style="-fx-background-color: FFF;" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER_LEFT" style="-fx-background-color: FFF;" BorderPane.alignment="CENTER">
          <children>
-            <ImageView fitHeight="50.0" fitWidth="86.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="68.0" fitWidth="118.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@/sample/res/esensa_logo.png" />
                </image>
             </ImageView>
+            <Label text="Baze Podataka 2" textFill="#acacac">
+               <font>
+                  <Font size="36.0" />
+               </font>
+               <padding>
+                  <Insets left="10.0" top="2.0" />
+               </padding></Label>
             <Region HBox.hgrow="ALWAYS" />
          </children>
          <padding>
@@ -40,28 +52,80 @@
          </padding>
       </HBox>
    </top>
-   <left>
-      <TreeView fx:id="tvMenu" BorderPane.alignment="CENTER">
-         <padding>
-            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-         </padding>
-         <BorderPane.margin>
-            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-         </BorderPane.margin>
-      </TreeView>
-   </left>
    <center>
-      <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-        <columns>
-          <TableColumn prefWidth="75.0" text="C1" />
-          <TableColumn prefWidth="75.0" text="C2" />
-        </columns>
-         <padding>
-            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-         </padding>
+      <VBox style="-fx-background-color: FFF;" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
          </BorderPane.margin>
-      </TableView>
+         <children>
+            <TabPane tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Zaposleni">
+                     <content>
+                        <VBox>
+                           <children>
+                              <TableView fx:id="tableZaposleni" VBox.vgrow="ALWAYS" />
+                              <ToolBar fx:id="toolbarZaposleni" nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0">
+                                <items>
+                                  <Button fx:id="btnZaposleniDelete" minWidth="60.0" mnemonicParsing="false" text="Delete" onAction="#deleteZaposleni" />
+                                    <Button fx:id="btnEditZaposleni" minWidth="60.0" mnemonicParsing="false" text="Edit" onAction="#editZaposleni"/>
+                                    <Line endX="-100.0" endY="42.4929084777832" fill="#8c8c8c" startX="-100.0" startY="15.972959518432617" stroke="#929292" />
+                                    <Button fx:id="btnInsertZaposleni" minWidth="60.0" mnemonicParsing="false" onAction="#insertZaposleni" text="Insert" />
+                                </items>
+                              </ToolBar>
+                           </children>
+                           <padding>
+                              <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+                           </padding></VBox>
+                     </content>
+                </Tab>
+                <Tab text="Grad">
+                     <content>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <TableView fx:id="tableGrad" prefHeight="200.0" prefWidth="200.0">
+                                 <padding>
+                                    <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+                                 </padding>
+                              </TableView>
+                              <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0">
+                                <items>
+                                  <Button minWidth="60.0" mnemonicParsing="false" text="Delete" />
+                                    <Button minWidth="60.0" mnemonicParsing="false" text="Edit" />
+                                    <Line endX="-100.0" endY="42.4929084777832" fill="#8c8c8c" startX="-100.0" startY="15.972959518432617" stroke="#929292" />
+                                    <Button minWidth="60.0" mnemonicParsing="false" text="Insert" />
+                                </items>
+                                 <VBox.margin>
+                                    <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+                                 </VBox.margin>
+                              </ToolBar>
+                           </children>
+                        </VBox>
+                     </content>
+                </Tab>
+                  <Tab text="Proizvod">
+                     <content>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <TableView fx:id="tableProizvodi" prefHeight="200.0" prefWidth="200.0" />
+                              <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0">
+                                <items>
+                                  <Button fx:id="btnDeleteProizvod" minWidth="60.0" mnemonicParsing="false" text="Delete" />
+                                    <Button fx:id="btnEditProizvod" minWidth="60.0" mnemonicParsing="false" text="Edit" />
+                                    <Line endX="-100.0" endY="42.4929084777832" fill="#8c8c8c" startX="-100.0" startY="15.972959518432617" stroke="#929292" />
+                                    <Button fx:id="btnInsertProizvod" minWidth="60.0" mnemonicParsing="false" text="Insert" />
+                                </items>
+                              </ToolBar>
+                           </children>
+                           <padding>
+                              <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </Tab>
+              </tabs>
+            </TabPane>
+         </children>
+      </VBox>
    </center>
 </BorderPane>

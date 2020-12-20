@@ -35,38 +35,12 @@ public class ConnectController {
         //Opening the MainForm;
         Stage stage = (Stage) btnConnect.getScene().getWindow();
         try {
+            stage.close();
             mainController.start(stage);
         } catch (Exception e) {
             System.out.println("Exception creating a new page.");
             e.printStackTrace();
         }
     }
-
-    public TreeView initTree() {
-
-        TreeItem root, tables, stats;
-
-        root = new TreeItem("root");
-        root.setExpanded(true);
-
-        TreeView tree = new TreeView();
-
-        tables = makeBranch("tables", root);
-        makeBranch("Zaposleni", tables);
-        makeBranch("Proizvod", tables);
-
-        stats = makeBranch("stats", root);
-        makeBranch("Graphs", stats);
-
-        return tree;
-    }
-
-    public TreeItem<String> makeBranch(String title, TreeItem parent) {
-        TreeItem item = new TreeItem<>(title);
-        item.setExpanded(true);
-        parent.getChildren().add(item);
-        return item;
-    }
-
 
 }

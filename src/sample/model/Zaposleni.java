@@ -6,13 +6,16 @@ public class Zaposleni {
 
     private String jmbg;
     private String imePrezime;
+    private Kontakt kontakt;
 
-    public Zaposleni(String jmbg, String imePrezime) {
+    public Zaposleni(String jmbg, String imePrezime, Kontakt kontakt) {
         this.jmbg = jmbg;
         this.imePrezime = imePrezime;
+        this.kontakt = kontakt;
     }
 
     public Zaposleni() {
+        kontakt = new Kontakt();
     }
 
     public String getJmbg() {
@@ -44,11 +47,20 @@ public class Zaposleni {
         return Objects.hash(getJmbg());
     }
 
+    public Kontakt getKontakt() {
+        return kontakt;
+    }
+
+    public void setKontakt(Kontakt kontakt) {
+        this.kontakt = kontakt;
+    }
+
     @Override
     public String toString() {
         return "Zaposleni{" +
                 "jmbg='" + jmbg + '\'' +
                 ", imePrezime='" + imePrezime + '\'' +
+                ", KONTAKT[ telefon: " + kontakt.getTelefon() + " fax: " +kontakt.getFax()+" email: "+kontakt.getEmail()+
                 '}';
     }
 }
