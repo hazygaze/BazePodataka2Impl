@@ -1,6 +1,8 @@
 package sample.model;
 
 
+import sample.util.Status;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -11,6 +13,7 @@ public class StanjeNaZalihama {
     private Date datum;
     private Proizvod proizvod;
     private String nazivProizvoda;
+    private Status status;
 
     public StanjeNaZalihama() {
     }
@@ -21,6 +24,10 @@ public class StanjeNaZalihama {
         this.datum = datum;
         this.proizvod = proizvod;
         this.nazivProizvoda = nazivProizvoda;
+    }
+
+    public StanjeNaZalihama(Proizvod proizvod) {
+        this.proizvod = proizvod;
     }
 
     public int getSifra() {
@@ -64,13 +71,20 @@ public class StanjeNaZalihama {
         this.nazivProizvoda = nazivProizvoda;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof StanjeNaZalihama)) return false;
         StanjeNaZalihama that = (StanjeNaZalihama) o;
-        return getSifra() == that.getSifra() &&
-                Objects.equals(getProizvod(), that.getProizvod());
+        return getSifra() == that.getSifra();
     }
 
     @Override

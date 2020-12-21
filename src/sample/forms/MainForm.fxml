@@ -68,7 +68,7 @@
                               <ToolBar fx:id="toolbarZaposleni" nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0">
                                 <items>
                                   <Button fx:id="btnZaposleniDelete" minWidth="60.0" mnemonicParsing="false" text="Delete" onAction="#deleteZaposleni" />
-                                    <Button fx:id="btnEditZaposleni" minWidth="60.0" mnemonicParsing="false" text="Edit" onAction="#editZaposleni"/>
+                                    <Button fx:id="btnEditZaposleni" minWidth="60.0" mnemonicParsing="false" onAction="#editZaposleni" text="Edit" />
                                     <Line endX="-100.0" endY="42.4929084777832" fill="#8c8c8c" startX="-100.0" startY="15.972959518432617" stroke="#929292" />
                                     <Button fx:id="btnInsertZaposleni" minWidth="60.0" mnemonicParsing="false" onAction="#insertZaposleni" text="Insert" />
                                 </items>
@@ -110,10 +110,10 @@
                               <TableView fx:id="tableProizvodi" prefHeight="200.0" prefWidth="200.0" />
                               <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0">
                                 <items>
-                                  <Button fx:id="btnDeleteProizvod" minWidth="60.0" mnemonicParsing="false" text="Delete" />
-                                    <Button fx:id="btnEditProizvod" minWidth="60.0" mnemonicParsing="false" text="Edit" />
+                                  <Button fx:id="btnDeleteProizvod" minWidth="60.0" mnemonicParsing="false" text="Delete" onAction="#deleteProizvod" />
+                                    <Button fx:id="btnEditProizvod" minWidth="60.0" mnemonicParsing="false" text="Edit" onAction="#editProizvod" />
                                     <Line endX="-100.0" endY="42.4929084777832" fill="#8c8c8c" startX="-100.0" startY="15.972959518432617" stroke="#929292" />
-                                    <Button fx:id="btnInsertProizvod" minWidth="60.0" mnemonicParsing="false" text="Insert" />
+                                    <Button fx:id="btnInsertProizvod" minWidth="60.0" mnemonicParsing="false" text="Insert" onAction="#insertProizvod"/>
                                 </items>
                               </ToolBar>
                            </children>

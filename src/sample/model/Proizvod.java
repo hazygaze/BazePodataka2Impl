@@ -1,5 +1,8 @@
 package sample.model;
 
+import javafx.beans.property.ReadOnlyListProperty;
+import sample.util.Status;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,7 +24,9 @@ public class Proizvod {
     }
 
     public Proizvod() {
+        stanja = new ArrayList<>();
     }
+
 
     public Integer getSifraProizvoda() {
         return sifraProizvoda;
@@ -85,5 +90,28 @@ public class Proizvod {
                 ", cenaProizvoda=" + cenaProizvoda +
                 ", aktuelnoSNZ=" + aktuelnoSNZ +
                 '}';
+    }
+
+    public void editStanje(StanjeNaZalihama snz) {
+        for(StanjeNaZalihama s: stanja) {
+            if(s.getSifra()==snz.getSifra()) {
+                s.setIznos(snz.getIznos());
+                s.setStatus(Status.UPDATED);
+                s.setDatum(snz.getDatum());
+                s.setNazivProizvoda(snz.getNazivProizvoda());
+            }
+        }
+    }
+
+    public void deleteStanje(StanjeNaZalihama snz) {
+        for(StanjeNaZalihama s: stanja) {
+            if(s.getSifra()==snz.getSifra()) {
+                if(snz.getStatus() == Status.NEW) {
+                    stanja.remove(s);
+                } else {
+                    s.setStatus(Status.DELETE);
+                }
+            }
+        }
     }
 }

@@ -6,6 +6,7 @@ import sample.util.MySQLException;
 
 import javax.xml.transform.Result;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -88,29 +89,6 @@ public class DBBroker {
         }
         return zaposlenis;
     }
-
-//    public List<Zaposleni> vratiSveZaposlene() {
-//        List<Zaposleni> zaposlenis = new ArrayList<>();
-//        String query = "SELECT JMBG_ZAPOSLENOG, IME_PREZIME, KONTAKT FROM ZAPOSLENI";
-//        try {
-//            PreparedStatement ps = connection.prepareStatement(query);
-//            ResultSet rs = ps.executeQuery();
-//            while(rs.next()){
-//                Zaposleni z = new Zaposleni();
-//                z.setJmbg(rs.getString("JMBG_ZAPOSLENOG"));
-//                z.setImePrezime(rs.getString("IME_PREZIME"));
-//
-//                Struct kontakt = (Struct) rs.getObject(3);
-//                Object[] attr = kontakt.getAttributes();
-//
-//
-//                zaposlenis.add(z);
-//            }
-//        } catch (SQLException ex) {
-//            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return zaposlenis;
-//    }
 
     public List<Grad> vratiSveGradove() {
         List<Grad> gradovi = new ArrayList<>();
@@ -224,8 +202,7 @@ public class DBBroker {
         }
     }
 
-
-    public void deleteZaposleni(Zaposleni z) {
+    public void deleteZaposleni(Zaposleni z) throws MySQLException {
         String query = "delete from ZAPOSLENI where JMBG_ZAPOSLENOG = ?";
         try {
             PreparedStatement ps = connection.prepareStatement(query);
@@ -233,6 +210,50 @@ public class DBBroker {
             ps.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+            throw new MySQLException("Došlo je do greške prilikom brisanja zaposlenog: \n"+throwables.getMessage());
+        }
+    }
+
+    public void deleteProizvod(Proizvod p) throws MySQLException {
+        String query = "delete from PROIZVOD where SIFRA_PROIZVODA = "+p.getSifraProizvoda();
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new MySQLException("Došlo je do greške prilikom brisanja proizvoda: \n"+throwables.getMessage());
+        }
+
+    }
+
+    public void insertProizvod(Proizvod proizvod) throws MySQLException {
+        String query = "insert into PROIZVOD (SIFRA_PROIZVODA, NAZIV_PROIZVODA, CENA_PROIZVODA) values (?,?,?)";
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1,proizvod.getSifraProizvoda());
+            ps.setString(2, proizvod.getNazivProizvoda());
+            ps.setDouble(3,proizvod.getCenaProizvoda());
+
+            int uspesno = ps.executeUpdate();
+            ps.close();
+
+            if(uspesno != 0) {
+                for(StanjeNaZalihama snz: proizvod.getStanja()) {
+                    String query2 = "insert into STANJE_NA_ZALIHAMA(SIFRA_SNZ,IZNOS_SNZ,DATUM,SIFRA_PROIZVODA) VALUES (?,?,TO_DATE(?,'DD.MM.YYY'),?)";
+                    ps = connection.prepareStatement(query2);
+                    ps.setInt(1,snz.getSifra());
+                    ps.setInt(2,snz.getIznos());
+                    ps.setString(3,new SimpleDateFormat("DD.MM.YYYY").format(snz.getDatum()));
+                    ps.setInt(4,proizvod.getSifraProizvoda());
+                    ps.executeUpdate();
+
+                }
+                ps.close();
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new MySQLException("Doslo je go greske prilikom cuvanja Proizvoda:\n"+throwables.getMessage());
         }
     }
 }

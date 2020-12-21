@@ -10,6 +10,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import sample.forms.AlertBox;
+import sample.model.Proizvod;
 import sample.model.Zaposleni;
 import sample.tables.GradTableHandler;
 import sample.tables.ProizvodTableHandler;
@@ -26,9 +28,7 @@ public class MainController {
     @FXML
     TableView tableZaposleni;
     ZaposleniTableHandler zt;
-    @FXML
-    Button btnInsertZaposleni;
-    //editZaposleni, deleteZaposleni;
+
     @FXML
     TableView tableGrad;
     GradTableHandler gt;
@@ -105,4 +105,58 @@ public class MainController {
         Zaposleni z = (Zaposleni) tableZaposleni.getItems().get(pos.getRow());
         zt.deleteZaposleni(z);
     }
+
+    public void insertProizvod(ActionEvent actionEvent) {
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+
+        Scene dialogScene = null;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("sample/forms/ProizvodForm.fxml"));
+            dialogScene = new Scene(loader.load(), 500, 430);
+
+            ProizvodController pc = loader.getController();
+            pc.init(Konstante.INSERT, pt, new Proizvod(), dialog);
+            dialog.setScene(dialogScene);
+            dialog.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void editProizvod(ActionEvent actionEvent) {
+        TablePosition pos = (TablePosition) tableProizvodi.getSelectionModel().getSelectedCells().get(0);
+        if(pos == null) {
+            AlertBox.display("Error dialog", "Morate selektovati red.");
+            return;
+        }
+        int row = pos.getRow();
+        Proizvod p = (Proizvod) tableProizvodi.getItems().get(row);
+        System.out.println("Editing::"+p);
+
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+
+        Scene dialogScene = null;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("sample/forms/ProizvodForm.fxml"));
+            dialogScene = new Scene(loader.load(), 500, 430);
+
+            ProizvodController pc = loader.getController();
+            pc.init(Konstante.EDIT, pt, p, dialog);
+            dialog.setScene(dialogScene);
+            dialog.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteProizvod(ActionEvent actionEvent) {
+        TablePosition pos = (TablePosition) tableProizvodi.getSelectionModel().getSelectedCells().get(0);
+        int row = pos.getRow();
+        Proizvod p = (Proizvod) tableProizvodi.getItems().get(pos.getRow());
+        pt.deleteProizvod(p);
+    }
+
+
 }

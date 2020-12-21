@@ -11,6 +11,7 @@ import javafx.util.Callback;
 import sample.db.DBBroker;
 import sample.model.Kontakt;
 import sample.model.Zaposleni;
+import sample.util.MySQLException;
 
 public class ZaposleniTableHandler {
 
@@ -82,8 +83,12 @@ public class ZaposleniTableHandler {
 
     public void deleteZaposleni(Zaposleni z) {
         if(zaposleni.contains(z)) {
-            DBBroker.getInstance().deleteZaposleni(z);
-            DBBroker.getInstance().commit();
+            try {
+                DBBroker.getInstance().deleteZaposleni(z);
+                DBBroker.getInstance().commit();
+            } catch (MySQLException e) {
+                e.printStackTrace();
+            }
             notifyDataChanged();
 
         }

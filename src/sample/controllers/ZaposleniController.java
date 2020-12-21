@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import sample.db.DBBroker;
+import sample.forms.AlertBox;
 import sample.model.Zaposleni;
 import sample.tables.ZaposleniTableHandler;
 import sample.util.Konstante;
@@ -71,6 +72,7 @@ public class ZaposleniController {
                 dialog.close();
             } catch (MySQLException e) {
                 System.out.println(e.getMessage());
+                AlertBox.display("Error dialog", e.getMessage());
             }
         }
         if(akcija == Konstante.EDIT) {

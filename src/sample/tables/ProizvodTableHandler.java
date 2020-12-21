@@ -6,8 +6,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import sample.db.DBBroker;
+import sample.forms.AlertBox;
 import sample.model.Proizvod;
 import sample.model.Proizvod;
+import sample.util.MySQLException;
 
 public class ProizvodTableHandler {
 
@@ -47,4 +49,19 @@ public class ProizvodTableHandler {
         return proizvodi;
     }
 
+    public void deleteProizvod(Proizvod p) {
+        if(proizvodi.contains(p)){
+//            proizvodi.remove(p);
+//            table.setItems(proizvodi);
+
+            try {
+                DBBroker.getInstance().deleteProizvod(p);
+                DBBroker.getInstance().commit();
+            } catch (MySQLException e) {
+                e.printStackTrace();
+                AlertBox.display("Error dialog",e.getMessage());
+            }
+            table.refresh();
+        }
+    }
 }
