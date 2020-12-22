@@ -1,6 +1,5 @@
 package sample.db;
 
-import oracle.jdbc.proxy.annotation.Pre;
 import sample.model.*;
 import sample.util.MySQLException;
 
@@ -90,7 +89,7 @@ public class DBBroker {
         return zaposlenis;
     }
 
-    public List<Grad> vratiSveGradove() {
+    public List<Grad> vratiSveGradove() throws MySQLException {
         List<Grad> gradovi = new ArrayList<>();
         String query = "select * from GRAD";
         try {
@@ -104,6 +103,9 @@ public class DBBroker {
             }
         } catch (SQLException ex) {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+            throw new MySQLException("Doslo je do greske prilikom ocitavanja gradova:\n" + ex.getLocalizedMessage());
+
+
         }
         return gradovi;
     }
@@ -256,4 +258,128 @@ public class DBBroker {
             throw new MySQLException("Doslo je go greske prilikom cuvanja Proizvoda:\n"+throwables.getMessage());
         }
     }
+
+    public List<Magacin> vratiSveMagacine() throws MySQLException {
+        List<Magacin> magacini = new ArrayList<>();
+        String query = "select * from MAGACIN_VIEW";
+        try {
+            Statement s = connection.createStatement();
+            ResultSet rs = s.executeQuery(query);
+            while(rs.next()){
+                int br_mag = rs.getInt("BROJ_MAGACINA");
+                String naziv_mag = rs.getString("NAZIV_MAGACINA");
+                String email = rs.getString("EMAIL");
+                String tel = rs.getString("TELEFON");
+                int postanskiBr = rs.getInt("POSTANSKI_BROJ");
+                Grad g = ucitajGrad(postanskiBr);
+                Magacin m = new Magacin(br_mag, naziv_mag, email, tel, g);
+                magacini.add(m);
+            }
+        } catch (SQLException | MySQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+            throw new MySQLException("Doslo je do greske prilikom citanja magacina:\n" + ex.getLocalizedMessage());
+        }
+        return magacini;
+    }
+
+    public void sacuvajMagacin(Magacin m) throws MySQLException {
+        String query = "insert into MAGACIN_VIEW values (?,?,?,?,?)";
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, m.getBrojMagacina());
+            ps.setString(2,m.getNazivMagacina());
+            ps.setString(3, m.getTelefon());
+            ps.setString(4, m.getEmail());
+            ps.setInt(5, m.getGrad().getPostanskiBroj());
+            ps.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new MySQLException("Doslo je do greske prilikom cuvanja magacina:\n" + throwables.getLocalizedMessage());
+        }
+    }
+
+    public void updateMagacin(Magacin m) throws MySQLException {
+        String query = "update MAGACIN_VIEW set NAZIV_MAGACINA = ?, EMAIL = ?, TELEFON = ?, POSTANSKI_BROJ = ? where BROJ_MAGACINA = "+m.getBrojMagacina();
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1,m.getNazivMagacina());
+            ps.setString(2, m.getEmail());
+            ps.setString(3, m.getTelefon());
+            ps.setInt(4, m.getGrad().getPostanskiBroj());
+            ps.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new MySQLException("Doslo je do greske prilikom azuiranja magacina: \n"+throwables.getMessage());
+        }
+    }
+
+    public void sacuvajGrad(Grad g) throws MySQLException {
+        String query = "insert into GRAD values (?,?)";
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, g.getPostanskiBroj());
+            ps.setString(2,g.getNazivGrada());
+            ps.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new MySQLException("Doslo je do greske prilikom cuvanja grada:\n" + throwables.getLocalizedMessage());
+        }
+    }
+
+    public void updateGrad(Grad g) throws MySQLException {
+        String query = "update GRAD set NAZIV_GRADA = ? where POSTANSKI_BROJ = "+ g.getPostanskiBroj();
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, g.getNazivGrada());
+            ps.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new MySQLException("Doslo je do greske prilikom azuriranja grada: \n"+throwables.getMessage());
+        }
+    }
+
+    public void deleteGrad(Grad g) throws MySQLException {
+        String query = "delete from GRAD where POSTANSKI_BROJ = "+g.getPostanskiBroj();
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new MySQLException("Došlo je do greške prilikom brisanja grada: \n"+throwables.getMessage());
+        }
+
+    }
+
+    public void deleteMagacin(Magacin m) throws MySQLException {
+        String query = "delete from MAGACIN_VIEW where BROJ_MAGACINA = "+m.getBrojMagacina();
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new MySQLException("Došlo je do greške prilikom brisanja magacina: \n"+throwables.getMessage());
+        }
+
+    }
+
+    public Grad ucitajGrad(Integer postanskiBroj) throws MySQLException {
+        Grad g = new Grad();
+        String query = "select * from GRAD where POSTANSKI_BROJ = " + postanskiBroj;
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                g.setPostanskiBroj(rs.getInt(1));
+                g.setNazivGrada(rs.getString(2));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new MySQLException("Došlo je do greške prilikom citanja grada: \n"+throwables.getMessage());
+        }
+        return g;
+    }
+
+
+
+
 }

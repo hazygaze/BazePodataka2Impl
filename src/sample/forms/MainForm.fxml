@@ -67,7 +67,7 @@
                               <TableView fx:id="tableZaposleni" VBox.vgrow="ALWAYS" />
                               <ToolBar fx:id="toolbarZaposleni" nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0">
                                 <items>
-                                  <Button fx:id="btnZaposleniDelete" minWidth="60.0" mnemonicParsing="false" text="Delete" onAction="#deleteZaposleni" />
+                                  <Button fx:id="btnZaposleniDelete" minWidth="60.0" mnemonicParsing="false" onAction="#deleteZaposleni" text="Delete" />
                                     <Button fx:id="btnEditZaposleni" minWidth="60.0" mnemonicParsing="false" onAction="#editZaposleni" text="Edit" />
                                     <Line endX="-100.0" endY="42.4929084777832" fill="#8c8c8c" startX="-100.0" startY="15.972959518432617" stroke="#929292" />
                                     <Button fx:id="btnInsertZaposleni" minWidth="60.0" mnemonicParsing="false" onAction="#insertZaposleni" text="Insert" />
@@ -103,6 +103,26 @@
                         </VBox>
                      </content>
                 </Tab>
+                  <Tab text="Magacin">
+                     <content>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <TableView fx:id="tableMagacini" prefHeight="200.0" prefWidth="200.0" />
+                              <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0">
+                                 <items>
+                                    <Button fx:id="btnDeleteMagacin" minWidth="60.0" mnemonicParsing="false" onAction="#deleteMagacin" text="Delete" />
+                                    <Button fx:id="btnEditMagacin" minWidth="60.0" mnemonicParsing="false" onAction="#editMagacin" text="Edit" />
+                                    <Line endX="-100.0" endY="42.4929084777832" fill="#8c8c8c" startX="-100.0" startY="15.972959518432617" stroke="#929292" />
+                                    <Button fx:id="btnInsertMagacin" minWidth="60.0" mnemonicParsing="false" onAction="#insertMaga" text="Insert" />
+                                 </items>
+                              </ToolBar>
+                           </children>
+                           <padding>
+                              <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </Tab>
                   <Tab text="Proizvod">
                      <content>
                         <VBox prefHeight="200.0" prefWidth="100.0">
@@ -110,10 +130,10 @@
                               <TableView fx:id="tableProizvodi" prefHeight="200.0" prefWidth="200.0" />
                               <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0">
                                 <items>
-                                  <Button fx:id="btnDeleteProizvod" minWidth="60.0" mnemonicParsing="false" text="Delete" onAction="#deleteProizvod" />
-                                    <Button fx:id="btnEditProizvod" minWidth="60.0" mnemonicParsing="false" text="Edit" onAction="#editProizvod" />
+                                  <Button fx:id="btnDeleteProizvod" minWidth="60.0" mnemonicParsing="false" onAction="#deleteProizvod" text="Delete" />
+                                    <Button fx:id="btnEditProizvod" minWidth="60.0" mnemonicParsing="false" onAction="#editProizvod" text="Edit" />
                                     <Line endX="-100.0" endY="42.4929084777832" fill="#8c8c8c" startX="-100.0" startY="15.972959518432617" stroke="#929292" />
-                                    <Button fx:id="btnInsertProizvod" minWidth="60.0" mnemonicParsing="false" text="Insert" onAction="#insertProizvod"/>
+                                    <Button fx:id="btnInsertProizvod" minWidth="60.0" mnemonicParsing="false" onAction="#insertProizvod" text="Insert" />
                                 </items>
                               </ToolBar>
                            </children>

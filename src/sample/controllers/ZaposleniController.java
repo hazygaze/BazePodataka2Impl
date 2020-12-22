@@ -50,7 +50,7 @@ public class ZaposleniController {
 
     private void edit() {
         txtJmbg.setText(zap.getJmbg());
-        txtFax.setEditable(false);
+        txtJmbg.setEditable(false);
         txtImePrez.setText(zap.getImePrezime());
         txtTelefon.setText(zap.getKontakt().getTelefon());
         txtEmail.setText(zap.getKontakt().getEmail());

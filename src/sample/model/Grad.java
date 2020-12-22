@@ -1,26 +1,35 @@
 package sample.model;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import java.util.Objects;
 
 public class Grad {
 
-    private int postanskiBroj;
+    private IntegerProperty postanskiBroj = new SimpleIntegerProperty();
+    public IntegerProperty postbrProperty() {
+        return postanskiBroj ;
+    }
+
     private String nazivGrada;
 
     public Grad(int postanskiBroj, String nazivGrada) {
-        this.postanskiBroj = postanskiBroj;
+        setPostanskiBroj(postanskiBroj);
         this.nazivGrada = nazivGrada;
     }
 
     public Grad() {
     }
 
-    public int getPostanskiBroj() {
-        return postanskiBroj;
+    public Integer getPostanskiBroj() {
+        return postanskiBroj.get();
     }
 
-    public void setPostanskiBroj(int postanskiBroj) {
-        this.postanskiBroj = postanskiBroj;
+    public void setPostanskiBroj(Integer postanskiBroj) {
+        this.postanskiBroj.set(postanskiBroj);
     }
 
     public String getNazivGrada() {
@@ -47,7 +56,7 @@ public class Grad {
     @Override
     public String toString() {
         return "Grad{" +
-                "postanskiBroj=" + postanskiBroj +
+                "postanskiBroj=" + postanskiBroj.get() +
                 ", nazivGrada='" + nazivGrada + '\'' +
                 '}';
     }

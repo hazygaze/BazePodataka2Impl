@@ -11,9 +11,11 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sample.forms.AlertBox;
+import sample.model.Magacin;
 import sample.model.Proizvod;
 import sample.model.Zaposleni;
 import sample.tables.GradTableHandler;
+import sample.tables.MagacinTableHandler;
 import sample.tables.ProizvodTableHandler;
 import sample.tables.ZaposleniTableHandler;
 import sample.util.Konstante;
@@ -36,6 +38,10 @@ public class MainController {
     TableView tableProizvodi;
     ProizvodTableHandler pt;
 
+    @FXML
+    TableView tableMagacini;
+    MagacinTableHandler mt;
+
     public MainController() {
     }
 
@@ -43,6 +49,7 @@ public class MainController {
         zt = new ZaposleniTableHandler(tableZaposleni);
         gt = new GradTableHandler(tableGrad);
         pt = new ProizvodTableHandler(tableProizvodi);
+        mt = new MagacinTableHandler(tableMagacini);
     }
 
     public void start(Stage window) throws Exception {
@@ -159,4 +166,51 @@ public class MainController {
     }
 
 
+    public void deleteMagacin(ActionEvent actionEvent) {
+        TablePosition pos = (TablePosition) tableMagacini.getSelectionModel().getSelectedCells().get(0);
+        int row = pos.getRow();
+        Magacin m = (Magacin) tableMagacini.getItems().get(pos.getRow());
+        mt.deleteMagacin(m);
+    }
+
+    public void editMagacin(ActionEvent actionEvent) {
+        TablePosition pos = (TablePosition) tableMagacini.getSelectionModel().getSelectedCells().get(0);
+        int row = pos.getRow();
+        Magacin m = (Magacin) tableMagacini.getItems().get(row);
+        System.out.println("Editing::"+m);
+
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+
+        Scene dialogScene = null;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("sample/forms/MagacinForm.fxml"));
+            dialogScene = new Scene(loader.load(), 350, 370);
+
+            MagacinController mc = loader.getController();
+            mc.init(Konstante.EDIT, mt, m, dialog);
+            dialog.setScene(dialogScene);
+            dialog.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void insertMaga(ActionEvent actionEvent) {
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+
+        Scene dialogScene = null;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("sample/forms/MagacinForm.fxml"));
+            dialogScene = new Scene(loader.load(), 350, 370);
+
+            MagacinController mc = loader.getController();
+            mc.init(Konstante.INSERT, mt, new Magacin(), dialog);
+            dialog.setScene(dialogScene);
+            dialog.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

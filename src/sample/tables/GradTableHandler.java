@@ -7,6 +7,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import sample.db.DBBroker;
 import sample.model.Grad;
+import sample.util.MySQLException;
 
 public class GradTableHandler {
 
@@ -35,7 +36,12 @@ public class GradTableHandler {
 
     public ObservableList<Grad> getGradovi() {
         ObservableList<Grad> gradovi =
-                FXCollections.observableArrayList(DBBroker.getInstance().vratiSveGradove());
+                null;
+        try {
+            gradovi = FXCollections.observableArrayList(DBBroker.getInstance().vratiSveGradove());
+        } catch (MySQLException e) {
+            e.printStackTrace();
+        }
         return gradovi;
     }
 }

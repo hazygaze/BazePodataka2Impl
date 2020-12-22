@@ -52,7 +52,7 @@ public class ZaposleniTableHandler {
             }
         });
 
-        TableColumn<Zaposleni, String> emailCol = new TableColumn<>("Fax");
+        TableColumn<Zaposleni, String> emailCol = new TableColumn<>("Email");
         emailCol.setMinWidth(200);
         emailCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Zaposleni, String>, ObservableValue<String>>() {
             @Override

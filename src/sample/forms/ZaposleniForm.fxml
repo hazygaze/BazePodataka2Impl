@@ -76,7 +76,7 @@
                   </HBox>
                   <HBox nodeOrientation="RIGHT_TO_LEFT" spacing="10.0">
                      <children>
-                        <TextField fx:id="txtFax" minWidth="150.0" />
+                        <TextField fx:id="txtFax" minWidth="150.0" editable="true" />
                         <Label text="Fax:">
                            <padding>
                               <Insets top="4.0" />
