@@ -1,18 +1,22 @@
 package sample.model;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import java.util.Objects;
 
 public class Magacin {
 
     private Integer brojMagacina;
-    private String nazivMagacina;
+    private StringProperty nazivMagacina = new SimpleStringProperty();
+    public StringProperty nazivMagacinaProperty() {return nazivMagacina;}
     private String email;
     private String telefon;
     private Grad grad;
 
     public Magacin(Integer brojMagacina, String nazivMagacina, String email, String telefon, Grad grad) {
         this.brojMagacina = brojMagacina;
-        this.nazivMagacina = nazivMagacina;
+        setNazivMagacina(nazivMagacina);
         this.email = email;
         this.telefon = telefon;
         this.grad = grad;
@@ -30,11 +34,11 @@ public class Magacin {
     }
 
     public String getNazivMagacina() {
-        return nazivMagacina;
+        return nazivMagacina.get();
     }
 
     public void setNazivMagacina(String nazivMagacina) {
-        this.nazivMagacina = nazivMagacina;
+        this.nazivMagacina.set(nazivMagacina);
     }
 
     public String getEmail() {

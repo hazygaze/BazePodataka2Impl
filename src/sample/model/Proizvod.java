@@ -1,6 +1,6 @@
 package sample.model;
 
-import javafx.beans.property.ReadOnlyListProperty;
+import javafx.beans.property.*;
 import sample.util.Status;
 
 import java.util.ArrayList;
@@ -9,15 +9,17 @@ import java.util.Objects;
 
 public class Proizvod {
 
-    private Integer sifraProizvoda;
-    private String nazivProizvoda;
+    private IntegerProperty sifraProizvoda = new SimpleIntegerProperty();
+    public IntegerProperty sifraProizvodaProperty() {return sifraProizvoda; }
+    private StringProperty nazivProizvoda = new SimpleStringProperty();
+    public StringProperty nazivProizvodaProperty() {return  nazivProizvoda;}
     private Double cenaProizvoda;
     private Integer aktuelnoSNZ;
     private List<StanjeNaZalihama> stanja;
 
     public Proizvod(Integer sifraProizvoda, String nazivProizvoda, Double cenaProizvoda, Integer aktuelnoSNZ) {
-        this.sifraProizvoda = sifraProizvoda;
-        this.nazivProizvoda = nazivProizvoda;
+       setSifraProizvoda(sifraProizvoda);
+        setNazivProizvoda(nazivProizvoda);
         this.cenaProizvoda = cenaProizvoda;
         this.aktuelnoSNZ = aktuelnoSNZ;
         stanja = new ArrayList<>();
@@ -28,20 +30,20 @@ public class Proizvod {
     }
 
 
-    public Integer getSifraProizvoda() {
-        return sifraProizvoda;
+    public int getSifraProizvoda() {
+        return sifraProizvoda.get();
     }
 
-    public void setSifraProizvoda(Integer sifraProizvoda) {
-        this.sifraProizvoda = sifraProizvoda;
+    public void setSifraProizvoda(int sifraProizvoda) {
+        this.sifraProizvoda.set(sifraProizvoda);
     }
 
     public String getNazivProizvoda() {
-        return nazivProizvoda;
+        return nazivProizvoda.get();
     }
 
     public void setNazivProizvoda(String nazivProizvoda) {
-        this.nazivProizvoda = nazivProizvoda;
+        this.nazivProizvoda.set(nazivProizvoda);
     }
 
     public Double getCenaProizvoda() {

@@ -99,7 +99,7 @@ public class ProizvodController {
 
 
     private void edit() {
-        txtSifra.setText(proizvod.getSifraProizvoda().toString());
+        txtSifra.setText(String.valueOf(proizvod.getSifraProizvoda()));
         txtNaziv.setText(proizvod.getNazivProizvoda());
         txtCena.setText(proizvod.getCenaProizvoda().toString());
         txtNaStanju.setText(proizvod.getAktuelnoSNZ().toString());

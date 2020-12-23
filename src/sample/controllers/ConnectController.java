@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import sample.db.DBBroker;
 import sun.rmi.runtime.Log;
 
+import javax.swing.text.html.ImageView;
 import java.io.PrintWriter;
 
 public class ConnectController {
@@ -20,6 +21,7 @@ public class ConnectController {
     @FXML
     TextField txtPassword;
 
+
     MainController mainController;
 
     public void initialize() throws Exception {
@@ -30,7 +32,9 @@ public class ConnectController {
     public void connect() {
         //Opening the connection
         System.out.println("Opening the connection.");
-        DBBroker.getInstance().openConnection("hazy","password");
+        String username = txtUsername.getText();
+        String password = txtPassword.getText();
+        DBBroker.getInstance().openConnection(username,password);
         System.out.println("Opened the connection.");
         //Opening the MainForm;
         Stage stage = (Stage) btnConnect.getScene().getWindow();

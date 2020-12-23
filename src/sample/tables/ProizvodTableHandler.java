@@ -64,4 +64,10 @@ public class ProizvodTableHandler {
             table.refresh();
         }
     }
+
+    public void notifyDataChanged() {
+        table.setItems(getProizvodi());
+        table.refresh();
+
+    }
 }

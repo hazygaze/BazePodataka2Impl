@@ -60,7 +60,18 @@
          <children>
             <TabPane tabClosingPolicy="UNAVAILABLE">
               <tabs>
-                <Tab text="Zaposleni">
+<!--                  <Tab text="HOME">-->
+<!--                      <content>-->
+<!--                          <VBox prefHeight="700.0" style="-fx-background-color: #fffac4;">-->
+<!--                              <children>-->
+<!--                                  -->
+<!--                              </children>-->
+<!--                              <padding>-->
+<!--                                  <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />-->
+<!--                              </padding></VBox>-->
+<!--                      </content>-->
+<!--                  </Tab>-->
+                <Tab onSelectionChanged="#refreshTables" text="Zaposleni">
                      <content>
                         <VBox>
                            <children>
@@ -79,7 +90,7 @@
                            </padding></VBox>
                      </content>
                 </Tab>
-                <Tab text="Grad">
+                <Tab onSelectionChanged="#refreshTables" text="Grad">
                      <content>
                         <VBox prefHeight="200.0" prefWidth="100.0">
                            <children>
@@ -103,7 +114,7 @@
                         </VBox>
                      </content>
                 </Tab>
-                  <Tab text="Magacin">
+                  <Tab onSelectionChanged="#refreshTables" text="Magacin">
                      <content>
                         <VBox prefHeight="200.0" prefWidth="100.0">
                            <children>
@@ -122,6 +133,30 @@
                            </padding>
                         </VBox>
                      </content>
+                  </Tab>
+                  <Tab text="Nalog">
+                      <content>
+                          <VBox prefHeight="500.0" prefWidth="100.0">
+                              <children>
+                                  <TableView fx:id="tableNalozi" prefHeight="200.0" prefWidth="200.0">
+                                      <padding>
+                                          <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+                                      </padding>
+                                  </TableView>
+                                  <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0">
+                                      <items>
+                                          <Button minWidth="60.0" mnemonicParsing="false" onAction="#deleteNalog" text="Delete" />
+                                          <Button minWidth="60.0" mnemonicParsing="false" onAction="#editNalog" text="Edit" />
+                                          <Line endX="-100.0" endY="42.4929084777832" fill="#8c8c8c" startX="-100.0" startY="15.972959518432617" stroke="#929292" />
+                                          <Button minWidth="60.0" mnemonicParsing="false" onAction="#insertNalog" text="Insert" />
+                                      </items>
+                                      <VBox.margin>
+                                          <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+                                      </VBox.margin>
+                                  </ToolBar>
+                              </children>
+                          </VBox>
+                      </content>
                   </Tab>
                   <Tab text="Proizvod">
                      <content>

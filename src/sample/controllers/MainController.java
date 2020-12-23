@@ -2,6 +2,7 @@ package sample.controllers;
 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,14 +13,13 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sample.forms.AlertBox;
 import sample.model.Magacin;
+import sample.model.NalogZaTransport;
 import sample.model.Proizvod;
 import sample.model.Zaposleni;
-import sample.tables.GradTableHandler;
-import sample.tables.MagacinTableHandler;
-import sample.tables.ProizvodTableHandler;
-import sample.tables.ZaposleniTableHandler;
+import sample.tables.*;
 import sample.util.Konstante;
 
+import javax.swing.text.html.ImageView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +42,13 @@ public class MainController {
     TableView tableMagacini;
     MagacinTableHandler mt;
 
+    @FXML
+    TableView tableNalozi;
+    NalogZaTransportTableHandler nt;
+
+    @FXML
+    ImageView image;
+
     public MainController() {
     }
 
@@ -50,6 +57,7 @@ public class MainController {
         gt = new GradTableHandler(tableGrad);
         pt = new ProizvodTableHandler(tableProizvodi);
         mt = new MagacinTableHandler(tableMagacini);
+        nt = new NalogZaTransportTableHandler(tableNalozi);
     }
 
     public void start(Stage window) throws Exception {
@@ -212,5 +220,63 @@ public class MainController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void deleteNalog(ActionEvent actionEvent) {
+        TablePosition pos = (TablePosition) tableNalozi.getSelectionModel().getSelectedCells().get(0);
+        int row = pos.getRow();
+        NalogZaTransport n = (NalogZaTransport) tableNalozi.getItems().get(pos.getRow());
+        nt.deleteNalog(n);
+    }
+
+    public void editNalog(ActionEvent actionEvent) {
+        TablePosition pos = (TablePosition) tableNalozi.getSelectionModel().getSelectedCells().get(0);
+        int row = pos.getRow();
+        NalogZaTransport n = (NalogZaTransport) tableNalozi.getItems().get(row);
+        System.out.println("Editing::"+n);
+
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+
+        Scene dialogScene = null;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("sample/forms/NalogZaTransportForm.fxml"));
+            dialogScene = new Scene(loader.load(), 350, 500);
+
+            NalogController nc = loader.getController();
+            nc.init(Konstante.EDIT, nt, n, dialog);
+            dialog.setScene(dialogScene);
+            dialog.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void insertNalog(ActionEvent actionEvent) {
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+
+        Scene dialogScene = null;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("sample/forms/NalogZaTransportForm.fxml"));
+            dialogScene = new Scene(loader.load(), 350, 500);
+
+            NalogController nc = loader.getController();
+            nc.init(Konstante.INSERT, nt, new NalogZaTransport(), dialog);
+            dialog.setScene(dialogScene);
+            dialog.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void refreshTables(Event event) {
+        System.out.println("IN HERE");
+//        zt.notifyDataChanged();
+        nt.notifyDataChanged();
+//        mt.notifyDataChanged();
+//        pt.notifyDataChanged();
+
     }
 }

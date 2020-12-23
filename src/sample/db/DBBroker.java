@@ -1,6 +1,7 @@
 package sample.db;
 
 import sample.model.*;
+import sample.util.Konstante;
 import sample.util.MySQLException;
 
 import javax.xml.transform.Result;
@@ -380,6 +381,170 @@ public class DBBroker {
     }
 
 
+    public List<NalogZaTransport> vratiSveNaloge() throws MySQLException {
+        List<NalogZaTransport> nalozi = new ArrayList<>();
+        String query = "select * from NALOG_ZA_TRANSPORT";
+        try {
+            Statement s = connection.createStatement();
+            ResultSet rs = s.executeQuery(query);
+            while(rs.next()){
+                int sifra = rs.getInt("SIFRA_NZT");
+                String opis = rs.getString("OPIS");
+                String datum = Konstante.vratiFormatiranDatum(new Date(rs.getDate("DATUM").getTime()));
+                String ni = rs.getString("NACIN_ISPORUKE");
+                int br_mag = rs.getInt("BROJ_MAGACINA");
+                Magacin m = ucitajMagacin(br_mag);
+                String jmbgZap = rs.getString("JMBG_ZAPOSLENOG");
+                Zaposleni z = ucitajZaposlenog(jmbgZap);
+                String jmbgMAg = rs.getString("JMBG_MAGACIONERA");
+                Magacioner mag = ucitajMagacionera(jmbgMAg);
+                mag.setMagacin(m);
+                int sifraPr = rs.getInt("SIFRA_PROIZVODA");
+                Proizvod p = vratiProizvod(sifraPr);
+                String imePrezZap = rs.getString("IME_PREZIME_ZAPOSLENOG");
+                NalogZaTransport nzt = new NalogZaTransport(sifra,opis,datum,mag,z,m,p,ni,imePrezZap);
+                nalozi.add(nzt);
+            }
+        } catch (SQLException | MySQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+            throw new MySQLException("Doslo je do greske prilikom citanja naloga:\n" + ex.getLocalizedMessage());
+        }
+        return nalozi;
+    }
 
+    public void updateNalog(NalogZaTransport nzt) throws MySQLException {
+        String query = "UPDATE NALOG_ZA_TRANSPORT SET SIFRA_NZT = ?, OPIS = ?, DATUM = TO_DATE(?,'dd.MM.yyyy'), JMBG_MAGACIONERA = ?, JMBG_ZAPOSLENOG = ? , SIFRA_PROIZVODA = ?, BROJ_MAGACINA = ?, NACIN_ISPORUKE = ? where SIFRA_NZT = " + nzt.getSifraNzt();
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1,nzt.getSifraNzt());
+            ps.setString(2, nzt.getOpis());
+            ps.setString(3,nzt.getDatum());
+            ps.setString(4,nzt.getMagacioner().getJmbg());
+            ps.setString(5,nzt.getZaposleni().getJmbg());
+            ps.setInt(6,nzt.getProizvod().getSifraProizvoda());
+            ps.setInt(7,nzt.getMagacin().getBrojMagacina());
+            ps.setString(8,nzt.getNacinIsporuke());
+
+            ps.executeUpdate();
+        } catch (SQLException ex)  {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+            throw new MySQLException("Doslo je do greske prilikom citanja naloga:\n" + ex.getLocalizedMessage());
+        }
+    }
+
+    public Magacin ucitajMagacin(int br_mag) throws MySQLException {
+        Magacin m = null;
+        String query = "select * from MAGACIN_VIEW where broj_magacina = "+br_mag;
+        try {
+            Statement s = connection.createStatement();
+            ResultSet rs = s.executeQuery(query);
+            while(rs.next()){
+                String naziv_mag = rs.getString("NAZIV_MAGACINA");
+                String email = rs.getString("EMAIL");
+                String tel = rs.getString("TELEFON");
+                int postanskiBr = rs.getInt("POSTANSKI_BROJ");
+                Grad g = ucitajGrad(postanskiBr);
+                m = new Magacin(br_mag, naziv_mag, email, tel, g);
+            }
+        } catch (SQLException | MySQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+            throw new MySQLException("Doslo je do greske prilikom citanja magacina:\n" + ex.getLocalizedMessage());
+        }
+        return m;
+
+    }
+
+    public Zaposleni ucitajZaposlenog(String jmbg) throws MySQLException {
+        Zaposleni z = new Zaposleni();
+        String query = "select jmbg_zaposlenog, ime_prezime from ZAPOSLENI where JMBG_ZAPOSLENOG = "+jmbg;
+        try {
+            Statement s = connection.createStatement();
+            ResultSet rs = s.executeQuery(query);
+            while(rs.next()){
+                String jmbgZa = rs.getString("JMBG_ZAPOSLENOG");
+                String imePRe = rs.getString("IME_PREZIME");
+                z.setJmbg(jmbgZa);
+                z.setImePrezime(imePRe);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+            throw new MySQLException("Doslo je do greske prilikom citanja zaposlenoga:\n" + ex.getLocalizedMessage());
+        }
+        return z;
+
+    }
+
+    public Magacioner ucitajMagacionera(String jmbg) throws MySQLException {
+        Magacioner m = new Magacioner();
+        String query = "select jmbg_magacionera, ime_prezime from MAGACIONER where JMBG_MAGACIONERA = "+jmbg;
+        try {
+            Statement s = connection.createStatement();
+            ResultSet rs = s.executeQuery(query);
+            while(rs.next()){
+                String jmbgZa = rs.getString("JMBG_MAGACIONERA");
+                String imePRe = rs.getString("IME_PREZIME");
+                m.setJmbg(jmbgZa);
+                m.setImePrezime(imePRe);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+            throw new MySQLException("Doslo je do greske prilikom citanja magacionera:\n" + ex.getLocalizedMessage());
+        }
+        return m;
+
+    }
+
+    public void deleteNalog(NalogZaTransport nzt) throws MySQLException {
+        String query = "delete from NALOG_ZA_TRANSPORT where SIFRA_NZT = "+nzt.getSifraNzt();
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new MySQLException("Došlo je do greške prilikom brisanja magacina: \n"+throwables.getMessage());
+        }
+    }
+
+    public List<Magacioner> vratiSveMagacionere() throws MySQLException {
+        List<Magacioner> magacioneri = new ArrayList<>();
+        String query = "select * from MAGACIONER";
+        try {
+            Statement s = connection.createStatement();
+            ResultSet rs = s.executeQuery(query);
+            while(rs.next()){
+                String jmbgZa = rs.getString("JMBG_MAGACIONERA");
+                String imePRe = rs.getString("IME_PREZIME");
+                Magacin magacin = ucitajMagacin(rs.getInt("BROJ_MAGACINA"));
+                Magacioner m = new Magacioner(jmbgZa, imePRe,magacin);
+                magacioneri.add(m);
+            }
+        } catch (SQLException | MySQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+            throw new MySQLException("Doslo je do greske prilikom citanja magacionera:\n" + ex.getLocalizedMessage());
+        }
+        return magacioneri;
+    }
+
+
+    public void insertNalog(NalogZaTransport nzt) throws MySQLException {
+        String query = "insert into NALOG_ZA_TRANSPORT (SIFRA_NZT, OPIS, DATUM, JMBG_MAGACIONERA, JMBG_ZAPOSLENOG, SIFRA_PROIZVODA, BROJ_MAGACINA, NACIN_ISPORUKE) VALUES(?,?,TO_DATE(?,'dd.MM.yyyy'),?,?,?,?,?)";
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1,nzt.getSifraNzt());
+            ps.setString(2, nzt.getOpis());
+            ps.setString(3,nzt.getDatum());
+            ps.setString(4,nzt.getMagacioner().getJmbg());
+            ps.setString(5,nzt.getZaposleni().getJmbg());
+            ps.setInt(6,nzt.getProizvod().getSifraProizvoda());
+            ps.setInt(7,nzt.getMagacin().getBrojMagacina());
+            ps.setString(8,nzt.getNacinIsporuke());
+
+            ps.executeUpdate();
+        } catch (SQLException ex)  {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+            throw new MySQLException("Doslo je do greske prilikom cuvanja naloga:\n" + ex.getLocalizedMessage());
+        }
+
+    }
 
 }

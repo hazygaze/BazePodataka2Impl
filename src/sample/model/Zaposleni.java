@@ -1,15 +1,19 @@
 package sample.model;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import java.util.Objects;
 
 public class Zaposleni {
 
-    private String jmbg;
+    private StringProperty jmbg = new SimpleStringProperty();
+    public StringProperty jmbgProperty() {return jmbg;}
     private String imePrezime;
     private Kontakt kontakt;
 
     public Zaposleni(String jmbg, String imePrezime, Kontakt kontakt) {
-        this.jmbg = jmbg;
+        setJmbg(jmbg);
         this.imePrezime = imePrezime;
         this.kontakt = kontakt;
     }
@@ -19,11 +23,11 @@ public class Zaposleni {
     }
 
     public String getJmbg() {
-        return jmbg;
+        return jmbg.get();
     }
 
     public void setJmbg(String jmbg) {
-        this.jmbg = jmbg;
+        this.jmbg.set(jmbg);
     }
 
     public String getImePrezime() {

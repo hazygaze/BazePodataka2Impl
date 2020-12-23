@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+<BorderPane prefHeight="360.0" style="-fx-border-width: 0;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.NalogController">
+    <center>
+        <VBox maxHeight="600.0" maxWidth="500.0" nodeOrientation="RIGHT_TO_LEFT">
+            <children>
+                <VBox nodeOrientation="RIGHT_TO_LEFT">
+                    <VBox.margin>
+                        <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+                    </VBox.margin>
+                    <children>
+                        <HBox nodeOrientation="RIGHT_TO_LEFT" spacing="10.0">
+                            <children>
+                                <TextField fx:id="txtSifra" minWidth="150.0" />
+                                <Label text="Šifra:">
+                                    <HBox.margin>
+                                        <Insets />
+                                    </HBox.margin>
+                                    <padding>
+                                        <Insets top="4.0" />
+                                    </padding>
+                                </Label>
+                            </children>
+                            <padding>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </padding>
+                        </HBox>
+                        <HBox nodeOrientation="RIGHT_TO_LEFT" spacing="10.0">
+                            <children>
+                                <TextField fx:id="txtOpis" minWidth="150.0" />
+                                <Label text="Opis:">
+                                    <padding>
+                                        <Insets top="4.0" />
+                                    </padding>
+                                </Label>
+                            </children>
+                            <padding>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </padding>
+                        </HBox>
+                        <HBox nodeOrientation="RIGHT_TO_LEFT" spacing="10.0">
+                            <children>
+                                <TextField fx:id="txtDatum" minWidth="150.0" />
+                                <Label text="Datum:">
+                                    <padding>
+                                        <Insets top="4.0" />
+                                    </padding>
+                                </Label>
+                            </children>
+                            <padding>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </padding>
+                        </HBox>
+                        <HBox nodeOrientation="RIGHT_TO_LEFT" spacing="10.0">
+                            <children>
+                                <TextField fx:id="txtNi" minWidth="150.0" />
+                                <Label text="Nacin isporuke:">
+                                    <padding>
+                                        <Insets top="4.0" />
+                                    </padding>
+                                </Label>
+                            </children>
+                            <padding>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </padding>
+                        </HBox>
+                        <HBox nodeOrientation="RIGHT_TO_LEFT" spacing="10.0">
+                            <children>
+                                <ComboBox fx:id="cbProizvodi" prefWidth="150.0" visibleRowCount="3" />
+                                <Label text="Proizvod:">
+                                    <padding>
+                                        <Insets top="4.0" />
+                                    </padding>
+                                </Label>
+                            </children>
+                            <padding>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </padding>
+                        </HBox>
+                        <HBox nodeOrientation="RIGHT_TO_LEFT" spacing="10.0">
+                            <children>
+                                <ComboBox fx:id="cbMagacioneri" prefWidth="150.0" visibleRowCount="3" />
+                                <Label text="Magacioner:">
+                                    <padding>
+                                        <Insets top="4.0" />
+                                    </padding>
+                                </Label>
+                            </children>
+                            <padding>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </padding>
+                        </HBox>
+                        <HBox nodeOrientation="RIGHT_TO_LEFT" spacing="10.0">
+                            <children>
+                                <ComboBox fx:id="cbZaposleni" prefWidth="150.0" visibleRowCount="10" />
+                                <Label text="Zaposleni:">
+                                    <padding>
+                                        <Insets top="4.0" />
+                                    </padding>
+                                </Label>
+                            </children>
+                            <padding>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </padding>
+                        </HBox>
+                        <HBox nodeOrientation="RIGHT_TO_LEFT" spacing="10.0">
+                            <children>
+                                <TextField fx:id="txtImePrezZap" prefWidth="150.0"  />
+                                <Label text="Ime i prezime zaposlenog:">
+                                    <padding>
+                                        <Insets top="4.0" />
+                                    </padding>
+                                </Label>
+                            </children>
+                            <padding>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </padding>
+                        </HBox>
+                    </children>
+                </VBox>
+            </children>
+            <padding>
+                <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+            </padding>
+        </VBox>
+    </center>
+    <top>
+        <HBox style="-fx-background-color: #4EC0CB;" BorderPane.alignment="CENTER">
+            <children>
+                <Label text="NALOG ZA TRANSPORT" textFill="WHITE">
+                    <padding>
+                        <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
+                    </padding>
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+            </children>
+        </HBox>
+    </top>
+    <bottom>
+        <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <items>
+                <Button fx:id="btnClose" minWidth="50.0" mnemonicParsing="false" onAction="#close" text="Close" />
+                <Button fx:id="btnSave" minWidth="50.0" mnemonicParsing="false" onAction="#save" text="Save" />
+            </items>
+        </ToolBar>
+    </bottom>
+</BorderPane>
+
