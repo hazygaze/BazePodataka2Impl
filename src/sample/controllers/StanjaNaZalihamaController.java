@@ -1,8 +1,10 @@
 package sample.controllers;
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import sample.forms.AlertBox;
 import sample.model.StanjeNaZalihama;
@@ -21,6 +23,7 @@ public class StanjaNaZalihamaController {
     private ProizvodController pc;
     Stage dialog;
     Zaposleni zap;
+    boolean raise = false;
 
     @FXML
     TextField txtSifra;
@@ -49,7 +52,14 @@ public class StanjaNaZalihamaController {
             this.snz = snz;
             edit();
         }
+        txtNazivPr.setOnKeyTyped(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                raise = true;
+            }
+        });
     }
+
 
     private void edit() {
         snz.setStatus(Status.UPDATED);
@@ -67,16 +77,15 @@ public class StanjaNaZalihamaController {
     }
 
     public void save(ActionEvent actionEvent) {
+        if(raise) {
+            pc.setRaise(raise);
+        }
 
         if(akcija == Konstante.INSERT) {
             snz.setSifra(Integer.parseInt(txtSifra.getText()));
             snz.setIznos(Integer.parseInt(txtIznos.getText()));
             snz.setNazivProizvoda(txtNazivPr.getText());
-            try {
-                snz.setDatum(new SimpleDateFormat("DD.MM.YYYY").parse(txtDatum.getText()));
-            } catch (ParseException e) {
-                AlertBox.display("Error","Greska u konverovanju datuma");
-            }
+            snz.setDatum(txtDatum.getText());
             pc.addToList(snz);
             dialog.close();
         }
@@ -84,17 +93,12 @@ public class StanjaNaZalihamaController {
         if(akcija == Konstante.EDIT) {
             snz.setIznos(Integer.parseInt(txtIznos.getText()));
             snz.setNazivProizvoda(txtNazivPr.getText());
-            try {
-                String dateStr = txtDatum.getText();
-                snz.setDatum(new SimpleDateFormat("dd.MM.YYYY").parse(txtDatum.getText()));
-            } catch (ParseException e) {
-                AlertBox.display("Error","Greska u konverovanju datuma");
-            }
-
+            snz.setDatum(txtDatum.getText());
             pc.editFromDialog(snz);
             dialog.close();
         }
-
-
     }
+
+
+
 }

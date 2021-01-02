@@ -25,11 +25,11 @@
                         <Label text="Šifra:" />
                         <Label text="Naziv:" />
                         <Label text="Cena:" />
-                        <Label text="Na stanju:">
-                           <VBox.margin>
-                              <Insets />
-                           </VBox.margin>
-                        </Label>
+<!--                        <Label text="Na stanju:">-->
+<!--                           <VBox.margin>-->
+<!--                              <Insets />-->
+<!--                           </VBox.margin>-->
+<!--                        </Label>-->
                      </children>
                       </VBox>
                   <VBox nodeOrientation="LEFT_TO_RIGHT" spacing="10.0">
@@ -37,7 +37,7 @@
                         <TextField fx:id="txtSifra" minWidth="150.0" />
                         <TextField fx:id="txtNaziv" minWidth="150.0" />
                         <TextField fx:id="txtCena" />
-                        <TextField fx:id="txtNaStanju" />
+<!--                        <TextField fx:id="txtNaStanju" />-->
                      </children>
                      <padding>
                         <Insets left="10.0" />

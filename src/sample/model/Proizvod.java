@@ -98,7 +98,9 @@ public class Proizvod {
         for(StanjeNaZalihama s: stanja) {
             if(s.getSifra()==snz.getSifra()) {
                 s.setIznos(snz.getIznos());
-                s.setStatus(Status.UPDATED);
+                if(!s.getStatus().equals(Status.NEW)) {
+                    s.setStatus(Status.UPDATED);
+                }
                 s.setDatum(snz.getDatum());
                 s.setNazivProizvoda(snz.getNazivProizvoda());
             }

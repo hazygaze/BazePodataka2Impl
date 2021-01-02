@@ -3,6 +3,7 @@ package sample.db;
 import sample.model.*;
 import sample.util.Konstante;
 import sample.util.MySQLException;
+import sample.util.Status;
 
 import javax.xml.transform.Result;
 import java.sql.*;
@@ -133,6 +134,27 @@ public class DBBroker {
         return proizvods;
     }
 
+    public List<Proizvod> izmeniProizvod( List<Proizvod> proizvods) {
+        String query = "select * from PROIZVOD";
+        try {
+            Statement s = connection.createStatement();
+            ResultSet rs = s.executeQuery(query);
+            while(rs.next()){
+                int sifra = rs.getInt("SIFRA_PROIZVODA");
+                double cena = rs.getDouble("CENA_PROIZVODA");
+                String naziv = rs.getString("NAZIV_PROIZVODA");
+                int aktuelno_snz = rs.getInt("AKTUELNO_SNZ");
+                Proizvod p = new Proizvod(sifra,naziv,cena,aktuelno_snz);
+                List<StanjeNaZalihama> stanjas = vratiSvaStanja(sifra);
+                p.setStanja(stanjas);
+                proizvods.add(p);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return proizvods;
+    }
+
     public List<StanjeNaZalihama> vratiSvaStanja(int sifraProizvoda) {
         List<StanjeNaZalihama> stanjas = new ArrayList<>();
         String query = "select * from STANJE_NA_ZALIHAMA where SIFRA_PROIZVODA = " +sifraProizvoda;
@@ -143,9 +165,10 @@ public class DBBroker {
                 int sifra = rs.getInt("SIFRA_SNZ");
                 int iznos = rs.getInt("IZNOS_SNZ");
                 Date datum = new Date(rs.getDate("DATUM").getTime());
+                String dat = new SimpleDateFormat("dd.MM.YYYY").format(datum);
                 Proizvod p = vratiProizvod(sifraProizvoda);
                 String naziv_pr  = rs.getString("NAZIV_PROIZVODA");
-                StanjeNaZalihama snz = new StanjeNaZalihama(sifra,iznos,datum,p,naziv_pr);
+                StanjeNaZalihama snz = new StanjeNaZalihama(sifra,iznos,dat,p,naziv_pr, Status.PULLED);
                 stanjas.add(snz);
             }
         } catch (SQLException ex) {
@@ -242,11 +265,11 @@ public class DBBroker {
 
             if(uspesno != 0) {
                 for(StanjeNaZalihama snz: proizvod.getStanja()) {
-                    String query2 = "insert into STANJE_NA_ZALIHAMA(SIFRA_SNZ,IZNOS_SNZ,DATUM,SIFRA_PROIZVODA) VALUES (?,?,TO_DATE(?,'DD.MM.YYY'),?)";
+                    String query2 = "insert into STANJE_NA_ZALIHAMA(SIFRA_SNZ,IZNOS_SNZ,DATUM,SIFRA_PROIZVODA) VALUES (?,?,TO_DATE(?,'DD.MM.YYYY'),?)";
                     ps = connection.prepareStatement(query2);
                     ps.setInt(1,snz.getSifra());
                     ps.setInt(2,snz.getIznos());
-                    ps.setString(3,new SimpleDateFormat("DD.MM.YYYY").format(snz.getDatum()));
+                    ps.setString(3,snz.getDatum());
                     ps.setInt(4,proizvod.getSifraProizvoda());
                     ps.executeUpdate();
 
@@ -547,4 +570,131 @@ public class DBBroker {
 
     }
 
+    public void editProizvod(Proizvod proizvod) throws MySQLException {
+        String query = "update PROIZVOD set NAZIV_PROIZVODA = ?, CENA_PROIZVODA = ? where SIFRA_PROIZVODA = "+ proizvod.getSifraProizvoda();
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, proizvod.getNazivProizvoda());
+            ps.setDouble(2, proizvod.getCenaProizvoda());
+            ps.executeUpdate();
+
+            for(StanjeNaZalihama snz: proizvod.getStanja()) {
+               switch (snz.getStatus()) {
+                   case DELETE:
+                        query = "delete from STANJE_NA_ZALIHAMA where SIFRA_PROIZVODA = ? and SIFRA_SNZ = ?";
+                        ps = connection.prepareStatement(query);
+                        ps.setInt(1, proizvod.getSifraProizvoda());
+                        ps.setInt(2, snz.getSifra());
+                        ps.executeUpdate();
+                        break;
+                   case UPDATED:
+                       query = "update STANJE_NA_ZALIHAMA set IZNOS_SNZ = ?, DATUM = TO_DATE(?,'DD.MM.YYYY') where SIFRA_PROIZVODA = ? and SIFRA_SNZ = ? ";
+                       ps = connection.prepareStatement(query);
+                       ps.setInt(1, snz.getIznos());
+                       ps.setString(2, snz.getDatum());
+                       ps.setInt(3, proizvod.getSifraProizvoda());
+                       ps.setInt(4, snz.getSifra());
+                       ps.executeUpdate();
+                       break;
+                   case NEW:
+                       query = "insert into STANJE_NA_ZALIHAMA(SIFRA_SNZ,IZNOS_SNZ,DATUM,SIFRA_PROIZVODA) VALUES (?,?,TO_DATE(?,'DD.MM.YYYY'),?)";
+                       ps = connection.prepareStatement(query);
+                       ps.setInt(1,snz.getSifra());
+                       ps.setInt(2,snz.getIznos());
+                       ps.setString(3,snz.getDatum());
+                       ps.setInt(4,proizvod.getSifraProizvoda());
+                       ps.executeUpdate();
+                       break;
+                   default:
+                       break;
+               }
+            }
+            ps.close();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new MySQLException("Doslo je do greske prilikom izmene proizvoda: \n"+ throwables.getMessage());
+        }
+    }
+
+    public void insertProizvodWithNaziv(Proizvod proizvod) throws MySQLException {
+        String query = "insert into PROIZVOD (SIFRA_PROIZVODA, NAZIV_PROIZVODA, CENA_PROIZVODA) values (?,?,?)";
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1,proizvod.getSifraProizvoda());
+            ps.setString(2, proizvod.getNazivProizvoda());
+            ps.setDouble(3,proizvod.getCenaProizvoda());
+
+            int uspesno = ps.executeUpdate();
+            ps.close();
+
+            if(uspesno != 0) {
+                for(StanjeNaZalihama snz: proizvod.getStanja()) {
+                    String query2 = "insert into STANJE_NA_ZALIHAMA(SIFRA_SNZ,IZNOS_SNZ,DATUM,SIFRA_PROIZVODA, NAZIV_PROIZVODA) VALUES (?,?,TO_DATE(?,'DD.MM.YYYY'),?,?)";
+                    ps = connection.prepareStatement(query2);
+                    ps.setInt(1,snz.getSifra());
+                    ps.setInt(2,snz.getIznos());
+                    ps.setString(3,snz.getDatum());
+                    ps.setInt(4,proizvod.getSifraProizvoda());
+                    ps.setString(5, snz.getNazivProizvoda());
+                    ps.executeUpdate();
+
+                }
+                ps.close();
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new MySQLException("Doslo je go greske prilikom cuvanja Proizvoda:\n"+throwables.getMessage());
+        }
+    }
+
+    public void editProizvodWithNaziv(Proizvod proizvod) throws MySQLException {
+        String query = "update PROIZVOD set NAZIV_PROIZVODA = ?, CENA_PROIZVODA = ? where SIFRA_PROIZVODA = "+ proizvod.getSifraProizvoda();
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, proizvod.getNazivProizvoda());
+            ps.setDouble(2, proizvod.getCenaProizvoda());
+            ps.executeUpdate();
+
+            for(StanjeNaZalihama snz: proizvod.getStanja()) {
+                switch (snz.getStatus()) {
+                    case DELETE:
+                        query = "delete from STANJE_NA_ZALIHAMA where SIFRA_PROIZVODA = ? and SIFRA_SNZ = ?";
+                        ps = connection.prepareStatement(query);
+                        ps.setInt(1, proizvod.getSifraProizvoda());
+                        ps.setInt(2, snz.getSifra());
+                        ps.executeUpdate();
+                        break;
+                    case UPDATED:
+                        query = "update STANJE_NA_ZALIHAMA set IZNOS_SNZ = ?, DATUM = TO_DATE(?,'DD.MM.YYYY'), NAZIV_PROIZVODA = ? where SIFRA_PROIZVODA = ? and SIFRA_SNZ = ? ";
+                        ps = connection.prepareStatement(query);
+                        ps.setInt(1, snz.getIznos());
+                        ps.setString(2, snz.getDatum());
+                        ps.setString(3, snz.getNazivProizvoda());
+                        ps.setInt(4, proizvod.getSifraProizvoda());
+                        ps.setInt(5, snz.getSifra());
+                        ps.executeUpdate();
+                        break;
+                    case NEW:
+                        query = "insert into STANJE_NA_ZALIHAMA(SIFRA_SNZ,IZNOS_SNZ,DATUM,SIFRA_PROIZVODA, NAZIV_PROIZVODA) VALUES (?,?,TO_DATE(?,'DD.MM.YYYY'),?,?)";
+                        ps = connection.prepareStatement(query);
+                        ps.setInt(1,snz.getSifra());
+                        ps.setInt(2,snz.getIznos());
+                        ps.setString(3,snz.getDatum());
+                        ps.setInt(4,proizvod.getSifraProizvoda());
+                        ps.setString(5, snz.getNazivProizvoda());
+                        ps.executeUpdate();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            ps.close();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new MySQLException("Doslo je do greske prilikom izmene proizvoda: \n"+ throwables.getMessage());
+        }
+    }
 }

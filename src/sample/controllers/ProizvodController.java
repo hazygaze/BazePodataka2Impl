@@ -29,6 +29,7 @@ import java.util.Date;
 public class ProizvodController {
 
     private int akcija = 0;
+    boolean raise = false;
     Stage dialog;
     Proizvod proizvod;
     ObservableList<StanjeNaZalihama> stanjaZaProizvod;
@@ -74,7 +75,7 @@ public class ProizvodController {
         iznosCol.setMinWidth(50);
         iznosCol.setCellValueFactory(new PropertyValueFactory<>("iznos"));
 
-        TableColumn<StanjeNaZalihama, Date> dateCol = new TableColumn<>("Datum");
+        TableColumn<StanjeNaZalihama, String> dateCol = new TableColumn<>("Datum");
         dateCol.setMinWidth(100);
         dateCol.setCellValueFactory(new PropertyValueFactory<>("datum"));
 
@@ -102,7 +103,7 @@ public class ProizvodController {
         txtSifra.setText(String.valueOf(proizvod.getSifraProizvoda()));
         txtNaziv.setText(proizvod.getNazivProizvoda());
         txtCena.setText(proizvod.getCenaProizvoda().toString());
-        txtNaStanju.setText(proizvod.getAktuelnoSNZ().toString());
+        //txtNaStanju.setText(proizvod.getAktuelnoSNZ().toString());
         stanjaZaProizvod = FXCollections.observableArrayList(proizvod.getStanja());
 
     }
@@ -166,15 +167,58 @@ public class ProizvodController {
 
 
     public void close(ActionEvent actionEvent) {
+        dialog.close();
     }
 
     public void save(ActionEvent actionEvent) {
+        if(raise) {
+            if(akcija == Konstante.INSERT) {
+                proizvod.setSifraProizvoda(Integer.parseInt(txtSifra.getText()));
+                updateFields();
+                try {
+                    DBBroker.getInstance().insertProizvodWithNaziv(proizvod);
+                    DBBroker.getInstance().commit();
+                    pt.notifyDataChanged();
+                    dialog.close();
+                } catch (MySQLException e) {
+                    e.printStackTrace();
+                    AlertBox.display("Error dialog", e.getMessage());
+                }
+            }
+            if(akcija == Konstante.EDIT) {
+                updateFields();
+                try {
+                    DBBroker.getInstance().editProizvodWithNaziv(proizvod);
+                    DBBroker.getInstance().commit();
+                    pt.notifyDataChanged();
+                    dialog.close();
+                } catch (MySQLException e) {
+                    e.printStackTrace();
+                    AlertBox.display("Error dialog", e.getMessage());
+                }
+            }
+            return;
+        }
+
         if(akcija == Konstante.INSERT) {
             proizvod.setSifraProizvoda(Integer.parseInt(txtSifra.getText()));
             updateFields();
             try {
                 DBBroker.getInstance().insertProizvod(proizvod);
                 DBBroker.getInstance().commit();
+                pt.notifyDataChanged();
+                dialog.close();
+            } catch (MySQLException e) {
+                e.printStackTrace();
+                AlertBox.display("Error dialog", e.getMessage());
+            }
+        }
+        if(akcija == Konstante.EDIT) {
+            updateFields();
+            try {
+                DBBroker.getInstance().editProizvod(proizvod);
+                DBBroker.getInstance().commit();
+                pt.notifyDataChanged();
                 dialog.close();
             } catch (MySQLException e) {
                 e.printStackTrace();
@@ -201,4 +245,7 @@ public class ProizvodController {
         notifyDataChanged();
     }
 
+    public void setRaise(boolean raise) {
+        this.raise = raise;
+    }
 }

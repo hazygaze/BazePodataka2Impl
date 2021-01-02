@@ -34,7 +34,7 @@ public class ConnectController {
         System.out.println("Opening the connection.");
         String username = txtUsername.getText();
         String password = txtPassword.getText();
-        DBBroker.getInstance().openConnection(username,password);
+        DBBroker.getInstance().openConnection("hazy","password");
         System.out.println("Opened the connection.");
         //Opening the MainForm;
         Stage stage = (Stage) btnConnect.getScene().getWindow();

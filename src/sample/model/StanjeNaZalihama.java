@@ -10,7 +10,7 @@ public class StanjeNaZalihama {
 
     private int sifra;
     private int iznos;
-    private Date datum;
+    private String datum;
     private Proizvod proizvod;
     private String nazivProizvoda;
     private Status status;
@@ -18,12 +18,13 @@ public class StanjeNaZalihama {
     public StanjeNaZalihama() {
     }
 
-    public StanjeNaZalihama(int sifra, int iznos, Date datum, Proizvod proizvod, String nazivProizvoda) {
+    public StanjeNaZalihama(int sifra, int iznos, String datum, Proizvod proizvod, String nazivProizvoda, Status status) {
         this.sifra = sifra;
         this.iznos = iznos;
         this.datum = datum;
         this.proizvod = proizvod;
         this.nazivProizvoda = nazivProizvoda;
+        this.status = status;
     }
 
     public StanjeNaZalihama(Proizvod proizvod) {
@@ -46,14 +47,13 @@ public class StanjeNaZalihama {
         this.iznos = iznos;
     }
 
-    public Date getDatum() {
+    public String getDatum() {
         return datum;
     }
 
-    public void setDatum(Date datum) {
+    public void setDatum(String datum) {
         this.datum = datum;
     }
-
 
     public Proizvod getProizvod() {
         return proizvod;
